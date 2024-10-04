@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections;
+    using System.Dynamic;
+    using System.Resources;
     using System.Threading;
     using System.Threading.Tasks;
     using Framework;
@@ -77,20 +79,7 @@
             task.WaitAndUnwrapException();
         }
 
-        //public async Task<IMessageBox> ShowMessageBoxAsync(string message, string title = null, MessageBoxOptions options = MessageBoxOptions.Ok)
-        //{
-        //    var box = _messageBoxFactory();
-
-        //    box.DisplayName = title;
-        //    box.Options = options;
-        //    box.Message = message;
-
-        //    await ActivateItemAsync(box);
-
-        //    return box;
-        //}
-
-        public async Task<bool> ShowMessageBoxAsync(string message, string title = null, MessageBoxOptions options = MessageBoxOptions.Ok)
+        public async Task<bool> ShowMessageBoxAsync(string message, string title = "", MessageBoxOptions options = MessageBoxOptions.Ok)
         {
             var box = _messageBoxFactory();
 
@@ -98,7 +87,10 @@
             box.Options = options;
             box.Message = message;
 
-            await _windowManager.ShowDialogAsync(box);
+            dynamic settings = new ExpandoObject();
+            settings.WindowStyle = System.Windows.WindowStyle.ToolWindow;
+
+            await _windowManager.ShowDialogAsync(box, settings:settings);
 
             return box.IsAccepted;
         }

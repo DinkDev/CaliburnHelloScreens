@@ -31,7 +31,14 @@
     <PackageReference Include="Autofac" Version="8.1.0" />
     <PackageReference Include="Caliburn.Micro" Version="4.0.212" />
     <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Resources\DefaultStyles.xaml">
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>
