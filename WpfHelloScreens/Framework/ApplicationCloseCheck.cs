@@ -24,6 +24,13 @@
             _closeCheckAsync = closeCheckAsync;
         }
 
+        public ApplicationCloseCheck(IChild screen, Func<IDialogManager, Task<bool>> closeCheckAsync, bool v)
+        {
+            _screen = screen;
+            _closeCheckAsync = closeCheckAsync;
+        }
+
+
         [Import]
         public IShell Shell { get; set; }
 

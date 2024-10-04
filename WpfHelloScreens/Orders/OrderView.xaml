@@ -8,7 +8,7 @@
                 HorizontalAlignment="Right"
                 DockPanel.Dock="Bottom"
                 Orientation="Horizontal">
-                <Button x:Name="Save"
+                <Button x:Name="SaveAsync"
                     Content="Save" />
                 <Button x:Name="TryCloseAsync"
                     Content="Close" />

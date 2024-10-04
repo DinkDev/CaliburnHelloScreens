@@ -26,6 +26,8 @@
 
         public MessageBoxOptions Options { get; set; }
 
+        public bool IsAccepted => WasSelected(MessageBoxOptions.Ok) || WasSelected(MessageBoxOptions.Yes);
+
         public async Task Ok()
         {
             await SelectAsync(MessageBoxOptions.Ok);

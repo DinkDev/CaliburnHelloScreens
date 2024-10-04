@@ -11,11 +11,13 @@
     [Export(typeof(IDialogManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class DialogConductorViewModel : PropertyChangedBase, IDialogManager, IConductActiveItem
     {
+        private readonly IWindowManager _windowManager;
         private readonly Func<IMessageBox> _messageBoxFactory;
 
         [ImportingConstructor]
-        public DialogConductorViewModel(Func<IMessageBox> messageBoxFactory)
+        public DialogConductorViewModel(IWindowManager windowManager, Func<IMessageBox> messageBoxFactory)
         {
+            _windowManager = windowManager;
             _messageBoxFactory = messageBoxFactory;
         }
 
@@ -37,7 +39,7 @@
 
             if (ActiveItem != null)
             {
-                await ActiveItem.ActivateAsync(cancellationToken).ConfigureAwait(false);
+                await ActiveItem.ActivateAsync(cancellationToken);
             }
 
             NotifyOfPropertyChange(() => ActiveItem);
@@ -78,8 +80,20 @@
             task.WaitAndUnwrapException();
         }
 
-        public void ShowMessageBox(string message, string title = "Hello Screens",
-            MessageBoxOptions options = MessageBoxOptions.Ok, Action<IMessageBox> callback = null)
+        //public async Task<IMessageBox> ShowMessageBoxAsync(string message, string title = null, MessageBoxOptions options = MessageBoxOptions.Ok)
+        //{
+        //    var box = _messageBoxFactory();
+
+        //    box.DisplayName = title;
+        //    box.Options = options;
+        //    box.Message = message;
+
+        //    await ActivateItemAsync(box);
+
+        //    return box;
+        //}
+
+        public async Task<bool> ShowMessageBoxAsync(string message, string title = null, MessageBoxOptions options = MessageBoxOptions.Ok)
         {
             var box = _messageBoxFactory();
 
@@ -87,14 +101,29 @@
             box.Options = options;
             box.Message = message;
 
-            if (callback != null)
-            {
-                box.Deactivated += async (sender, args) => { await Task.Run(() => callback(box)); };
-            }
+            await _windowManager.ShowDialogAsync(box);
 
-            var task = ActivateItemAsync(box);
-            task.WaitAndUnwrapException();
+            return box.IsAccepted;
         }
+
+
+        //public void ShowMessageBox(string message, string title = "Hello Screens",
+        //    MessageBoxOptions options = MessageBoxOptions.Ok, Action<IMessageBox> callback = null)
+        //{
+        //    var box = _messageBoxFactory();
+
+        //    box.DisplayName = title;
+        //    box.Options = options;
+        //    box.Message = message;
+
+        //    if (callback != null)
+        //    {
+        //        box.Deactivated += async (sender, args) => { await Task.Run(() => callback(box)); };
+        //    }
+
+        //    var task = ActivateItemAsync(box);
+        //    task.WaitAndUnwrapException();
+        //}
 
         private async Task CloseActiveItemCoreAsync()
         {

@@ -1,6 +1,7 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Customers
 {
     using System.ComponentModel.Composition;
+    using System.Threading.Tasks;
     using Framework;
     using JetBrains.Annotations;
 
@@ -9,10 +10,10 @@
     public class CustomerViewModel : DocumentBase
     {
         [UsedImplicitly]
-        public void Save()
+        public async Task SaveAsync()
         {
             IsDirty = false;
-            Dialogs.ShowMessageBox("Your data has been successfully saved.", "Data Saved");
+            await Dialogs.ShowMessageBoxAsync("Your data has been successfully saved.", "Data Saved");
         }
 
         [UsedImplicitly]

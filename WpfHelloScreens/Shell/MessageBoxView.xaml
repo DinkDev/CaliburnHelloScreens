@@ -11,7 +11,7 @@
             <Button x:Name="Ok"
                     Margin="2 0 0 0"
                     Visibility="{Binding OkVisible, Converter={StaticResource booleanToVisibility}}"
-                    Content="Ok" />
+                    Content="Ok"/>
             <Button x:Name="Yes"
                     Margin="2 0 0 0"
                     Visibility="{Binding YesVisible, Converter={StaticResource booleanToVisibility}}"
