@@ -1,7 +1,6 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Framework
 {
     using System;
-    using System.ComponentModel.Composition;
     using System.Threading.Tasks;
 
     using Nito.AsyncEx.Synchronous;
@@ -11,14 +10,14 @@
         private readonly IChild _screen;
         private readonly Func<IDialogManager, Task<bool>> _closeCheckAsync;
 
-        public ApplicationCloseCheck(IChild screen, Func<IDialogManager, Task<bool>> closeCheckAsync)
+        public ApplicationCloseCheck(IShell shell, IChild screen, Func<IDialogManager, Task<bool>> closeCheckAsync)
         {
+            Shell = shell;
             _screen = screen;
             _closeCheckAsync = closeCheckAsync;
         }
 
-        [Import]
-        public IShell Shell { get; set; }
+        public IShell Shell { get; }
 
         public void Execute(CoroutineExecutionContext context)
         {

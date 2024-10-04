@@ -1,10 +1,8 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Settings
 {
-    using System.ComponentModel.Composition;
     using Framework;
     using Nito.AsyncEx.Synchronous;
 
-    [Export(typeof(IWorkspace))]
     public class SettingsViewModel : Screen, IWorkspace
     {
         public SettingsViewModel()

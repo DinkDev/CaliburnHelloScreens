@@ -1,14 +1,15 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Customers
 {
-    using System.ComponentModel.Composition;
     using System.Threading.Tasks;
-    using Framework;
     using JetBrains.Annotations;
+    using Framework;
 
-    [Export(typeof(CustomerViewModel))]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class CustomerViewModel : DocumentBase
     {
+        public CustomerViewModel(IShell shell, IDialogManager dialogs) : base(shell, dialogs)
+        {
+        }
+
         [UsedImplicitly]
         public async Task SaveAsync()
         {

@@ -1,13 +1,18 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Framework
 {
     using System;
-    using System.ComponentModel.Composition;
     using System.Threading;
     using System.Threading.Tasks;
     using Nito.AsyncEx.Synchronous;
 
     public class DocumentBase : Screen, IHaveShutdownTask
     {
+        public DocumentBase(IShell shell, IDialogManager dialogs)
+        {
+            Shell = shell;
+            Dialogs = dialogs;
+        }
+
         bool _isDirty;
 
         public bool IsDirty
@@ -23,10 +28,9 @@
             }
         }
 
-        [Import]
-        public IDialogManager Dialogs { get; set; }
+        public IShell Shell { get; }
 
-        // TODO: is this necessary
+        public IDialogManager Dialogs { get; }
 
         public override async Task<bool> CanCloseAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -42,7 +46,7 @@
 
         public IResult GetShutdownTask()
         {
-            return IsDirty ? new ApplicationCloseCheck(this, DoCloseCheckAsync) : null;
+            return IsDirty ? new ApplicationCloseCheck(Shell,this, DoCloseCheckAsync) : null;
         }
 
         protected virtual async Task<bool> DoCloseCheckAsync(IDialogManager dialogs)
@@ -52,13 +56,5 @@
                 "Unsaved Data",
                 MessageBoxOptions.YesNo);
         }
-
-        //protected virtual async Task<IMessageBox> DoCloseCheckNewAsync(IDialogManager dialogs)
-        //{
-        //    return await Dialogs.ShowMessageBoxAsync(
-        //        "You have unsaved data. Are you sure you want to close this document? All changes will be lost.",
-        //        "Unsaved Data",
-        //        MessageBoxOptions.YesNo);
-        //}
     }
 }

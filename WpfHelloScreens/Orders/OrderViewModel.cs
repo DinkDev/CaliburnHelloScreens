@@ -1,14 +1,15 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Orders
 {
-    using System.ComponentModel.Composition;
     using System.Threading.Tasks;
     using JetBrains.Annotations;
     using Framework;
 
-    [Export(typeof(OrderViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
-
     public class OrderViewModel : DocumentBase
     {
+        public OrderViewModel(IShell shell, IDialogManager dialogs) : base(shell, dialogs)
+        {
+        }
+
         [UsedImplicitly]
         public async Task SaveAsync()
         {

@@ -2,19 +2,16 @@
 {
     using System;
     using System.Collections;
-    using System.ComponentModel.Composition;
     using System.Threading;
     using System.Threading.Tasks;
     using Framework;
     using Nito.AsyncEx.Synchronous;
 
-    [Export(typeof(IDialogManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class DialogConductorViewModel : PropertyChangedBase, IDialogManager, IConductActiveItem
     {
         private readonly IWindowManager _windowManager;
         private readonly Func<IMessageBox> _messageBoxFactory;
 
-        [ImportingConstructor]
         public DialogConductorViewModel(IWindowManager windowManager, Func<IMessageBox> messageBoxFactory)
         {
             _windowManager = windowManager;

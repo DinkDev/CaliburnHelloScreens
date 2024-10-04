@@ -1,11 +1,9 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Shell
 {
-    using System.ComponentModel.Composition;
     using System.Threading.Tasks;
     using JetBrains.Annotations;
     using Framework;
 
-    [Export(typeof(IMessageBox)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class MessageBoxViewModel : Screen, IMessageBox
     {
         private MessageBoxOptions _selection;

@@ -1,19 +1,17 @@
-﻿namespace Caliburn.Micro.HelloScreens.Shell
+﻿
+using System.Reflection;
+
+namespace Caliburn.Micro.HelloScreens.Shell
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.ComponentModel.Composition.Hosting;
-    using System.Linq;
     using System.Windows;
-    using Customers;
-    using Framework;
+    using Autofac;
     using Nito.AsyncEx.Synchronous;
-    using Orders;
 
     public class ScreensBootstrapper : BootstrapperBase
     {
-        CompositionContainer _container;
+        private IContainer _container;
 
         public ScreensBootstrapper()
         {
@@ -22,45 +20,61 @@
 
         protected override void Configure()
         {
-            _container = new CompositionContainer(
-                new AggregateCatalog(
-                    AssemblySource.Instance.Select(x => new AssemblyCatalog(x))));
+            var builder = new ContainerBuilder();
 
-            var batch = new CompositionBatch();
+            // register types generally
+            var local = Assembly.GetExecutingAssembly();
+            var caliburn = Assembly.GetAssembly(typeof(WindowManager))
+                           ?? throw new NullReferenceException(nameof(Caliburn));
 
-            batch.AddExportedValue<IWindowManager>(new WindowManager());
-            batch.AddExportedValue<IEventAggregator>(new EventAggregator());
-            batch.AddExportedValue<Func<IMessageBox>>(() => _container.GetExportedValue<IMessageBox>());
-            batch.AddExportedValue<Func<CustomerViewModel>>(() => _container.GetExportedValue<CustomerViewModel>());
-            batch.AddExportedValue<Func<OrderViewModel>>(() => _container.GetExportedValue<OrderViewModel>());
-            batch.AddExportedValue(_container);
+            builder.RegisterAssemblyTypes(local, caliburn)
+                .AsSelf()
+                .AsImplementedInterfaces();
 
-            _container.Compose(batch);
+            // ensure only one Shell
+            builder.RegisterType<ShellViewModel>()
+                .SingleInstance()
+                .AsImplementedInterfaces();
+
+            _container = builder.Build();
         }
 
         protected override object GetInstance(Type serviceType, string key)
         {
-            var contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
-            var exports = _container
-                .GetExportedValues<object>(contract)
-                .ToArray();
-
-            if (exports.Any())
+            if (serviceType == null)
             {
-                return exports.First();
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
-            throw new Exception($"Could not locate any instances of contract {contract}.");
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                if (_container.IsRegistered(serviceType))
+                {
+                    return _container.Resolve(serviceType);
+                }
+            }
+            else if (_container.IsRegisteredWithKey(key, serviceType))
+            {
+                return _container.ResolveKeyed(key, serviceType);
+            }
+
+            var keyMessage = string.IsNullOrWhiteSpace(key) ? string.Empty : $"Key: {key}, ";
+            var msg = $"Unable to find registration for {keyMessage} Service: {serviceType.Name}.";
+            throw new Exception(msg);
         }
 
         protected override IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            return _container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
+            var type = typeof(IEnumerable<>).MakeGenericType(serviceType);
+            return _container.Resolve(type) as IEnumerable<object>;
         }
 
         protected override void BuildUp(object instance)
         {
-            _container.SatisfyImportsOnce(instance);
+            _container.InjectUnsetProperties(instance);
+
+            // alternatively, could use InjectProperties to inject every property - set or not
+            //_container.InjectProperties(instance);
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
