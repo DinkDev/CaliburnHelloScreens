@@ -28,27 +28,31 @@
 
         public bool IsAccepted => WasSelected(MessageBoxOptions.Ok) || WasSelected(MessageBoxOptions.Yes);
 
+        [UsedImplicitly]
         public async Task Ok()
         {
             await SelectAsync(MessageBoxOptions.Ok);
         }
 
+        [UsedImplicitly]
         public async Task Cancel()
         {
             await SelectAsync(MessageBoxOptions.Cancel);
         }
 
+        [UsedImplicitly]
         public async Task Yes()
         {
             await SelectAsync(MessageBoxOptions.Yes);
         }
 
+        [UsedImplicitly]
         public async Task No()
         {
             await SelectAsync(MessageBoxOptions.No);
         }
 
-        public bool WasSelected(MessageBoxOptions option)
+        private bool WasSelected(MessageBoxOptions option)
         {
             return (_selection & option) == option;
         }

@@ -67,7 +67,7 @@
                     //        var tiledX = (x % _sourceBitmap.PixelWidth);
                     //        var tiledY = (y % _sourceBitmap.PixelHeight);
                     //        var writeRec = new Int32Rect(x, y, final.PixelWidth, final.PixelHeight);
-
+                    //
                     //        //final.Pixels[y * final.PixelWidth + x] = sourceBitmap.Pixels[tiledY * sourceBitmap.PixelWidth + tiledX];
                     //    }
                     //}

@@ -106,25 +106,6 @@
             return box.IsAccepted;
         }
 
-
-        //public void ShowMessageBox(string message, string title = "Hello Screens",
-        //    MessageBoxOptions options = MessageBoxOptions.Ok, Action<IMessageBox> callback = null)
-        //{
-        //    var box = _messageBoxFactory();
-
-        //    box.DisplayName = title;
-        //    box.Options = options;
-        //    box.Message = message;
-
-        //    if (callback != null)
-        //    {
-        //        box.Deactivated += async (sender, args) => { await Task.Run(() => callback(box)); };
-        //    }
-
-        //    var task = ActivateItemAsync(box);
-        //    task.WaitAndUnwrapException();
-        //}
-
         private async Task CloseActiveItemCoreAsync()
         {
             var oldItem = ActiveItem;

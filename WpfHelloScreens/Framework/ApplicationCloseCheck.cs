@@ -9,27 +9,13 @@
     public class ApplicationCloseCheck : IResult
     {
         private readonly IChild _screen;
-        //private readonly Action<IDialogManager, Action<bool>> _closeCheck;
         private readonly Func<IDialogManager, Task<bool>> _closeCheckAsync;
-
-        //public ApplicationCloseCheck(IChild screen, Action<IDialogManager, Action<bool>> closeCheck)
-        //{
-        //    _screen = screen;
-        //    _closeCheck = closeCheck;
-        //}
 
         public ApplicationCloseCheck(IChild screen, Func<IDialogManager, Task<bool>> closeCheckAsync)
         {
             _screen = screen;
             _closeCheckAsync = closeCheckAsync;
         }
-
-        public ApplicationCloseCheck(IChild screen, Func<IDialogManager, Task<bool>> closeCheckAsync, bool v)
-        {
-            _screen = screen;
-            _closeCheckAsync = closeCheckAsync;
-        }
-
 
         [Import]
         public IShell Shell { get; set; }

@@ -1,6 +1,5 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Framework
 {
-    using System;
     using System.Threading.Tasks;
 
     public interface IDialogManager
@@ -11,10 +10,5 @@
             string message,
             string title = null,
             MessageBoxOptions options = MessageBoxOptions.Ok);
-
-        //Task<IMessageBox> ShowMessageBoxAsync(
-        //    string message,
-        //    string title = null,
-        //    MessageBoxOptions options = MessageBoxOptions.Ok);
     }
 }
