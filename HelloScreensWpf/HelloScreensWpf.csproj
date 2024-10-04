@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Caliburn.Micro.HelloScreens</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Customers\Resources\Images\man1-48.png" />
+    <None Remove="Orders\Resources\Images\shopping-cart-full48.png" />
+    <None Remove="Settings\Resources\Images\report48.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Customers\Resources\Images\man1-48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Orders\Resources\Images\shopping-cart-full48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Settings\Resources\Images\report48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.1.0" />
+    <PackageReference Include="Caliburn.Micro" Version="4.0.212" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+  </ItemGroup>
+
+</Project>
