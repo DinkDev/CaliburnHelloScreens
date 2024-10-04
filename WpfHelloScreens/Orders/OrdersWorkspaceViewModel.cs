@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.Composition;
+    using System.Threading.Tasks;
     using Framework;
 
     [Export(typeof(IWorkspace))]
@@ -27,7 +28,7 @@
             var vm = createOrderViewModel();
             vm.DisplayName = "Order " + count++;
             vm.IsDirty = true;
-            Edit(vm);
+            Task.WaitAll(EditAsync(vm));
         }
     }
 }

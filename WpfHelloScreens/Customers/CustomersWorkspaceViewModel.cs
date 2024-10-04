@@ -1,4 +1,6 @@
-﻿namespace Caliburn.Micro.HelloScreens.Customers
+﻿using System.Threading.Tasks;
+
+namespace Caliburn.Micro.HelloScreens.Customers
 {
     using System;
     using System.ComponentModel.Composition;
@@ -11,23 +13,27 @@
         static int count = 1;
 
         [ImportingConstructor]
-        public CustomersWorkspaceViewModel(Func<CustomerViewModel> customerVMFactory) {
+        public CustomersWorkspaceViewModel(Func<CustomerViewModel> customerVMFactory)
+        {
             createCustomerViewModel = customerVMFactory;
         }
 
-        public override string IconName {
+        public override string IconName
+        {
             get { return "Customers"; }
         }
 
-        public override string Icon {
+        public override string Icon
+        {
             get { return "../Customers/Resources/Images/man1-48.png"; }
         }
 
-        public void New() {
+        public void New()
+        {
             var vm = createCustomerViewModel();
             vm.DisplayName = "Customer " + count++;
             vm.IsDirty = true;
-            Edit(vm);
+            Task.WaitAll(EditAsync(vm));
         }
     }
 }

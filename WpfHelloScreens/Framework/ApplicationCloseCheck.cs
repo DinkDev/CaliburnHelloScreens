@@ -1,4 +1,6 @@
-﻿namespace Caliburn.Micro.HelloScreens.Framework {
+﻿using System.Threading.Tasks;
+
+namespace Caliburn.Micro.HelloScreens.Framework {
     using System;
     using System.ComponentModel.Composition;
 
@@ -17,7 +19,9 @@
         public void Execute(CoroutineExecutionContext context) {
             var documentWorkspace = screen.Parent as IDocumentWorkspace;
             if (documentWorkspace != null)
-                documentWorkspace.Edit(screen);
+            {
+                Task.WaitAll(documentWorkspace.EditAsync(screen));
+            }
 
             closeCheck(Shell.Dialogs, result => Completed(this, new ResultCompletionEventArgs { WasCancelled = !result }));
         }

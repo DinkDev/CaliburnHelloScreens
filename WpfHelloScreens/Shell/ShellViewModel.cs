@@ -5,18 +5,21 @@
     using Framework;
 
     [Export(typeof(IShell))]
+    [Export(typeof(ShellViewModel))]
     public class ShellViewModel : Conductor<IWorkspace>.Collection.OneActive, IShell
     {
         readonly IDialogManager dialogs;
 
         [ImportingConstructor]
-        public ShellViewModel(IDialogManager dialogs, [ImportMany]IEnumerable<IWorkspace> workspaces) {
+        public ShellViewModel(IDialogManager dialogs, [ImportMany] IEnumerable<IWorkspace> workspaces)
+        {
             this.dialogs = dialogs;
             Items.AddRange(workspaces);
             CloseStrategy = new ApplicationCloseStrategy();
         }
 
-        public IDialogManager Dialogs {
+        public IDialogManager Dialogs
+        {
             get { return dialogs; }
         }
     }

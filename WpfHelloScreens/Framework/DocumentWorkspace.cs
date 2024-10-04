@@ -1,77 +1,122 @@
-﻿namespace Caliburn.Micro.HelloScreens.Framework {
+﻿namespace Caliburn.Micro.HelloScreens.Framework
+{
     using System.ComponentModel;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public abstract class DocumentWorkspace<TDocument> : Conductor<TDocument>.Collection.OneActive, IDocumentWorkspace
-        where TDocument : class, INotifyPropertyChanged, IDeactivate, IHaveDisplayName {
-        DocumentWorkspaceState state = DocumentWorkspaceState.Master;
+        where TDocument : class, INotifyPropertyChanged, IDeactivate, IHaveDisplayName
+    {
+        private DocumentWorkspaceState _state = DocumentWorkspaceState.Master;
 
-        protected DocumentWorkspace() {
+        protected DocumentWorkspace()
+        {
             Items.CollectionChanged += delegate { NotifyOfPropertyChange(() => Status); };
             DisplayName = IconName;
         }
 
-        public DocumentWorkspaceState State {
-            get { return state; }
-            set {
-                if(state == value)
-                    return;
-
-                state = value;
-                NotifyOfPropertyChange(() => State);
+        public DocumentWorkspaceState State
+        {
+            get => _state;
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    NotifyOfPropertyChange(() => State);
+                }
             }
         }
 
-        protected IConductor Conductor {
-            get { return (IConductor)Parent; }
-        }
+        protected IConductor Conductor => (IConductor)Parent;
 
         public abstract string IconName { get; }
         public abstract string Icon { get; }
 
-        public string Status {
-            get { return Items.Count > 0 ? Items.Count.ToString() : string.Empty; }
-        }
+        public string Status => Items.Count > 0 ? Items.Count.ToString() : string.Empty;
 
-        public void Show() {
-            var haveActive = Parent as IHaveActiveItem;
-            if (haveActive != null && haveActive.ActiveItem == this) {
+        public void Show()
+        {
+            if (!(Parent is IHaveActiveItem haveActive) || haveActive.ActiveItem != this)
+            {
+                Conductor.ActivateItemAsync(this);
+            }
+            else
+            {
                 DisplayName = IconName;
                 State = DocumentWorkspaceState.Master;
             }
-            else Conductor.ActivateItem(this);
         }
 
-        void IDocumentWorkspace.Edit(object document) {
-            Edit((TDocument)document);
+        async Task IDocumentWorkspace.EditAsync(object document)
+        {
+            await EditAsync((TDocument)document);
         }
 
-        public void Edit(TDocument child) {
-            Conductor.ActivateItem(this);
+        //public void Edit(TDocument child)
+        //{
+        //    Conductor.ActivateItemAsync(this);
+        //    State = DocumentWorkspaceState.Detail;
+        //    DisplayName = child.DisplayName;
+        //    ActivateItemAsync(child);
+        //}
+
+        public async Task EditAsync(TDocument child)
+        {
+            await Conductor.ActivateItemAsync(this);
             State = DocumentWorkspaceState.Detail;
             DisplayName = child.DisplayName;
-            ActivateItem(child);
+            await ActivateItemAsync(child);
         }
 
-        public override void ActivateItem(TDocument item) {
-            item.Deactivated += OnItemOnDeactivated;
+        //public override void ActivateItem(TDocument item) {
+        //    item.Deactivated += OnItemOnDeactivated;
+        //    item.PropertyChanged += OnItemPropertyChanged;
+
+        //    base.ActivateItem(item);
+        //}
+
+        public override async Task ActivateItemAsync(TDocument item,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            item.Deactivated += OnItemOnDeactivatedAsync;
             item.PropertyChanged += OnItemPropertyChanged;
 
-            base.ActivateItem(item);
+            await base.ActivateItemAsync(item, cancellationToken);
         }
 
-        void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if(e.PropertyName == "DisplayName")
+        void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "DisplayName")
+            {
                 DisplayName = ((TDocument)sender).DisplayName;
+            }
         }
 
-        void OnItemOnDeactivated(object sender, DeactivationEventArgs e) {
-            var doc = (TDocument)sender;
-            if(e.WasClosed) {
-                DisplayName = IconName;
-                State = DocumentWorkspaceState.Master;
-                doc.Deactivated -= OnItemOnDeactivated;
-                doc.PropertyChanged -= OnItemPropertyChanged;
-            }
+        //void OnItemOnDeactivated(object sender, DeactivationEventArgs e)
+        //{
+        //    var doc = (TDocument)sender;
+        //    if(e.WasClosed) {
+        //        DisplayName = IconName;
+        //        State = DocumentWorkspaceState.Master;
+        //        doc.Deactivated -= OnItemOnDeactivated;
+        //        doc.PropertyChanged -= OnItemPropertyChanged;
+        //    }
+        //}
+
+        private async Task OnItemOnDeactivatedAsync(object sender, DeactivationEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                var doc = (TDocument)sender;
+                if (e.WasClosed)
+                {
+                    DisplayName = IconName;
+                    State = DocumentWorkspaceState.Master;
+                    doc.Deactivated -= OnItemOnDeactivatedAsync;
+                    doc.PropertyChanged -= OnItemPropertyChanged;
+                }
+            }).ConfigureAwait(false);
         }
     }
 }

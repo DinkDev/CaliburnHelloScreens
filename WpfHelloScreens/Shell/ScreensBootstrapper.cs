@@ -14,16 +14,18 @@
 
     public class ScreensBootstrapper : BootstrapperBase
     {
-        CompositionContainer container;
-        Window mainWindow;
-        bool actuallyClosing;
+        CompositionContainer _container;
+        Window _mainWindow;
+        bool _actuallyClosing;
 
-        public ScreensBootstrapper() {
+        public ScreensBootstrapper()
+        {
             Initialize();
         }
 
-        protected override void Configure() {
-            container = new CompositionContainer(
+        protected override void Configure()
+        {
+            _container = new CompositionContainer(
                 new AggregateCatalog(
                     AssemblySource.Instance.Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()));
             //CompositionHost.Initialize(
@@ -36,17 +38,18 @@
 
             batch.AddExportedValue<IWindowManager>(new WindowManager());
             batch.AddExportedValue<IEventAggregator>(new EventAggregator());
-            batch.AddExportedValue<Func<IMessageBox>>(() => container.GetExportedValue<IMessageBox>());
-            batch.AddExportedValue<Func<CustomerViewModel>>(() => container.GetExportedValue<CustomerViewModel>());
-            batch.AddExportedValue<Func<OrderViewModel>>(() => container.GetExportedValue<OrderViewModel>());
-            batch.AddExportedValue(container);
+            batch.AddExportedValue<Func<IMessageBox>>(() => _container.GetExportedValue<IMessageBox>());
+            batch.AddExportedValue<Func<CustomerViewModel>>(() => _container.GetExportedValue<CustomerViewModel>());
+            batch.AddExportedValue<Func<OrderViewModel>>(() => _container.GetExportedValue<OrderViewModel>());
+            batch.AddExportedValue(_container);
 
-            container.Compose(batch);
+            _container.Compose(batch);
         }
 
-        protected override object GetInstance(Type serviceType, string key) {
+        protected override object GetInstance(Type serviceType, string key)
+        {
             var contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
-            var exports = container.GetExportedValues<object>(contract);
+            var exports = _container.GetExportedValues<object>(contract);
 
             if (exports.Any())
                 return exports.First();
@@ -54,40 +57,55 @@
             throw new Exception(string.Format("Could not locate any instances of contract {0}.", contract));
         }
 
-        protected override IEnumerable<object> GetAllInstances(Type serviceType) {
-            return container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
+        protected override IEnumerable<object> GetAllInstances(Type serviceType)
+        {
+            return _container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
         }
 
-        protected override void BuildUp(object instance) {
-            container.SatisfyImportsOnce(instance);
+        protected override void BuildUp(object instance)
+        {
+            _container.SatisfyImportsOnce(instance);
         }
 
-        protected override void OnStartup(object sender, StartupEventArgs e) {
-            DisplayRootViewFor<IShell>();
+        protected override void OnStartup(object sender, StartupEventArgs e)
+        {
+            //DisplayRootViewFor<IShell>();
+            this.DisplayRootViewForAsync<ShellViewModel>();
 
-            mainWindow = Application.MainWindow;
-
-            mainWindow.Closing += MainWindowClosing;
+            //_mainWindow = Application.MainWindow;
+            //
+            //if (_mainWindow != null)
+            //{
+            //    _mainWindow.Closing += MainWindowClosing;
+            //}
         }
 
-        void MainWindowClosing(object sender, CancelEventArgs e) {
-            if (actuallyClosing)
-                return;
-
-            e.Cancel = true;
-
-            Execute.OnUIThread(
-                () => {
-                    var shell = IoC.Get<IShell>();
-
-                    shell.CanClose(
-                        result => {
-                            if (result) {
-                                actuallyClosing = true;
-                                mainWindow.Close();
-                            }
-                        });
-                });
-        }
+        //void MainWindowClosing(object sender, CancelEventArgs e)
+        //{
+        //    if (!_actuallyClosing)
+        //    {
+        //        e.Cancel = true;
+        //
+        //        Execute.OnUIThread(
+        //            () =>
+        //            {
+        //                var shell = IoC.Get<IShell>();
+        //
+        //                //shell.CanClose(
+        //                //    result => {
+        //                //        if (result) {
+        //                //            actuallyClosing = true;
+        //                //            mainWindow.Close();
+        //                //        }
+        //                //    });
+        //                var result = shell.CanCloseAsync().Result;
+        //                if (result)
+        //                {
+        //                    _actuallyClosing = true;
+        //                    //_mainWindow.Close();
+        //                }
+        //            });
+        //    }
+        //}
     }
 }
