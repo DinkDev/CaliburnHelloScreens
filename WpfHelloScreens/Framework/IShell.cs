@@ -1,5 +1,7 @@
-namespace Caliburn.Micro.HelloScreens.Framework {
-    public interface IShell : IConductor, IGuardClose {
+namespace Caliburn.Micro.HelloScreens.Framework
+{
+    public interface IShell : IConductor, IGuardClose
+    {
         IDialogManager Dialogs { get; }
     }
 }

@@ -3,17 +3,25 @@
     using System;
     using System.ComponentModel.Composition;
     using System.Threading.Tasks;
+
     using Nito.AsyncEx.Synchronous;
 
     public class ApplicationCloseCheck : IResult
     {
-        readonly Action<IDialogManager, Action<bool>> closeCheck;
-        readonly IChild screen;
+        private readonly IChild _screen;
+        //private readonly Action<IDialogManager, Action<bool>> _closeCheck;
+        private readonly Func<IDialogManager, Task<bool>> _closeCheckAsync;
 
-        public ApplicationCloseCheck(IChild screen, Action<IDialogManager, Action<bool>> closeCheck)
+        //public ApplicationCloseCheck(IChild screen, Action<IDialogManager, Action<bool>> closeCheck)
+        //{
+        //    _screen = screen;
+        //    _closeCheck = closeCheck;
+        //}
+
+        public ApplicationCloseCheck(IChild screen, Func<IDialogManager, Task<bool>> closeCheckAsync)
         {
-            this.screen = screen;
-            this.closeCheck = closeCheck;
+            _screen = screen;
+            _closeCheckAsync = closeCheckAsync;
         }
 
         [Import]
@@ -21,15 +29,15 @@
 
         public void Execute(CoroutineExecutionContext context)
         {
-            var documentWorkspace = screen.Parent as IDocumentWorkspace;
-            if (documentWorkspace != null)
+            if (_screen.Parent is IDocumentWorkspace documentWorkspace)
             {
-                var task =documentWorkspace.EditAsync(screen);
+                var task = documentWorkspace.EditAsync(_screen);
                 task.WaitAndUnwrapException();
             }
 
-            closeCheck(Shell.Dialogs,
-                result => Completed(this, new ResultCompletionEventArgs { WasCancelled = !result }));
+            var task2 = _closeCheckAsync(Shell.Dialogs);
+            var result = task2.WaitAndUnwrapException();
+            Completed(this, new ResultCompletionEventArgs { WasCancelled = !result });
         }
 
         public event EventHandler<ResultCompletionEventArgs> Completed = delegate { };

@@ -11,35 +11,20 @@
     [Export(typeof(IDialogManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class DialogConductorViewModel : PropertyChangedBase, IDialogManager, IConductActiveItem
     {
-        readonly Func<IMessageBox> createMessageBox;
+        private readonly Func<IMessageBox> _messageBoxFactory;
 
         [ImportingConstructor]
         public DialogConductorViewModel(Func<IMessageBox> messageBoxFactory)
         {
-            createMessageBox = messageBoxFactory;
+            _messageBoxFactory = messageBoxFactory;
         }
 
         public IScreen ActiveItem { get; set; }
 
         public IEnumerable GetChildren()
         {
-            return ActiveItem != null ? new[] { ActiveItem } : new object[0];
+            return ActiveItem != null ? new[] { ActiveItem } : Array.Empty<object>();
         }
-
-        //public void ActivateItem(object item)
-        //{
-        //    ActiveItem = item as IScreen;
-
-        //    if (ActiveItem is IChild child)
-        //    {
-        //        child.Parent = this;
-        //    }
-
-        //    ActiveItem?.ActivateAsync();
-
-        //    NotifyOfPropertyChange(() => ActiveItem);
-        //    ActivationProcessed(this, new ActivationProcessedEventArgs { Item = ActiveItem, Success = true });
-        //}
 
         public async Task ActivateItemAsync(object item, CancellationToken cancellationToken = new CancellationToken())
         {
@@ -58,30 +43,6 @@
             NotifyOfPropertyChange(() => ActiveItem);
             ActivationProcessed(this, new ActivationProcessedEventArgs { Item = ActiveItem, Success = true });
         }
-
-        //public void DeactivateItem(object item, bool close)
-        //{
-        //    if (item is IGuardClose guard)
-        //    {
-        //        //guard.CanClose(result =>
-        //        //{
-        //        //    if (result)
-        //        //    {
-        //        //        CloseActiveItemCore();
-        //        //    }
-        //        //});
-        //
-        //        var result = guard.CanCloseAsync(CancellationToken.None).Result;
-        //        if (result)
-        //        {
-        //            CloseActiveItemCore();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        CloseActiveItemCore();
-        //    }
-        //}
 
         public async Task DeactivateItemAsync(object item, bool close, CancellationToken cancellationToken = new CancellationToken())
         {
@@ -120,7 +81,7 @@
         public void ShowMessageBox(string message, string title = "Hello Screens",
             MessageBoxOptions options = MessageBoxOptions.Ok, Action<IMessageBox> callback = null)
         {
-            var box = createMessageBox();
+            var box = _messageBoxFactory();
 
             box.DisplayName = title;
             box.Options = options;
@@ -134,12 +95,6 @@
             var task = ActivateItemAsync(box);
             task.WaitAndUnwrapException();
         }
-
-        //void CloseActiveItemCore() {
-        //    var oldItem = ActiveItem;
-        //    ActivateItem(null);
-        //    oldItem.Deactivate(true);
-        //}
 
         private async Task CloseActiveItemCoreAsync()
         {

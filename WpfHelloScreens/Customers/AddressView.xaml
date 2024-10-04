@@ -5,6 +5,6 @@
         <TextBlock FontSize="20"
                    Text="This is where the address details would go..." />
 		<Button Content="Close"
-		        x:Name="TryClose" />
+		        x:Name="TryCloseAsync" />
 	</StackPanel>
 </UserControl>

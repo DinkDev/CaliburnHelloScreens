@@ -2,31 +2,31 @@
 {
     using System;
     using System.ComponentModel.Composition;
-    using Framework;
+    using JetBrains.Annotations;
     using Nito.AsyncEx.Synchronous;
+    using Framework;
 
     [Export(typeof(IWorkspace))]
     public class OrdersWorkspaceViewModel : DocumentWorkspace<OrderViewModel>
     {
-        static int count = 1;
-        readonly Func<OrderViewModel> createOrderViewModel;
+        private static int _count = 1;
+        private readonly Func<OrderViewModel> _orderViewModelFactory;
 
         [ImportingConstructor]
-        public OrdersWorkspaceViewModel(Func<OrderViewModel> orderVMFactory) {
-            createOrderViewModel = orderVMFactory;
+        public OrdersWorkspaceViewModel(Func<OrderViewModel> orderVmFactory)
+        {
+            _orderViewModelFactory = orderVmFactory;
         }
 
-        public override string IconName {
-            get { return "Orders"; }
-        }
+        public override string IconName => "Orders";
 
-        public override string Icon {
-            get { return "../Orders/Resources/Images/shopping-cart-full48.png"; }
-        }
+        public override string Icon => "../Orders/Resources/Images/shopping-cart-full48.png";
 
-        public void New() {
-            var vm = createOrderViewModel();
-            vm.DisplayName = "Order " + count++;
+        [UsedImplicitly]
+        public void New()
+        {
+            var vm = _orderViewModelFactory();
+            vm.DisplayName = "Order " + _count++;
             vm.IsDirty = true;
             var task = EditAsync(vm);
             task.WaitAndUnwrapException();

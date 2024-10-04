@@ -62,8 +62,7 @@
                                    Mode=TwoWay}" />
             </Border>
             <ContentControl
-                cal:View.Context="{Binding State,
-                                           Mode=TwoWay}"
+                cal:View.Context="{Binding State, Mode=TwoWay}"
                 cal:View.Model="{Binding}" />
         </DockPanel>
     </Border>

@@ -2,36 +2,28 @@
 {
     using System.ComponentModel.Composition;
     using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using Framework;
-    using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IMessageBox)), PartCreationPolicy(CreationPolicy.NonShared)]
-
     public class MessageBoxViewModel : Screen, IMessageBox
     {
-        MessageBoxOptions selection;
+        private MessageBoxOptions _selection;
 
-        public bool OkVisible
-        {
-            get { return IsVisible(MessageBoxOptions.Ok); }
-        }
+        [UsedImplicitly]
+        public bool OkVisible => IsVisible(MessageBoxOptions.Ok);
 
-        public bool CancelVisible
-        {
-            get { return IsVisible(MessageBoxOptions.Cancel); }
-        }
+        [UsedImplicitly]
+        public bool CancelVisible => IsVisible(MessageBoxOptions.Cancel);
 
-        public bool YesVisible
-        {
-            get { return IsVisible(MessageBoxOptions.Yes); }
-        }
+        [UsedImplicitly]
+        public bool YesVisible => IsVisible(MessageBoxOptions.Yes);
 
-        public bool NoVisible
-        {
-            get { return IsVisible(MessageBoxOptions.No); }
-        }
+        [UsedImplicitly]
+        public bool NoVisible => IsVisible(MessageBoxOptions.No);
 
         public string Message { get; set; }
+
         public MessageBoxOptions Options { get; set; }
 
         public async Task Ok()
@@ -56,17 +48,17 @@
 
         public bool WasSelected(MessageBoxOptions option)
         {
-            return (selection & option) == option;
+            return (_selection & option) == option;
         }
 
-        bool IsVisible(MessageBoxOptions option)
+        private bool IsVisible(MessageBoxOptions option)
         {
             return (Options & option) == option;
         }
 
         private async Task SelectAsync(MessageBoxOptions option)
         {
-            selection = option;
+            _selection = option;
             await TryCloseAsync();
         }
     }

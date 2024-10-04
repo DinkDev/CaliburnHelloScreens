@@ -1,8 +1,15 @@
-﻿namespace Caliburn.Micro.HelloScreens.Framework {
+﻿namespace Caliburn.Micro.HelloScreens.Framework
+{
     using System;
 
-    public interface IDialogManager {
+    public interface IDialogManager
+    {
         void ShowDialog(IScreen dialogModel);
-        void ShowMessageBox(string message, string title = null, MessageBoxOptions options = MessageBoxOptions.Ok, Action<IMessageBox> callback = null);
+
+        void ShowMessageBox(
+            string message,
+            string title = null,
+            MessageBoxOptions options = MessageBoxOptions.Ok,
+            Action<IMessageBox> callback = null);
     }
 }

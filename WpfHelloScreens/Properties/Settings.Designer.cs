@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WpfHelloScreens.Properties {
+namespace Caliburn.Micro.HelloScreens.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -10,7 +10,7 @@
                 Orientation="Horizontal">
                 <Button x:Name="Save"
                     Content="Save" />
-                <Button x:Name="TryClose"
+                <Button x:Name="TryCloseAsync"
                     Content="Close" />
             </StackPanel>
 

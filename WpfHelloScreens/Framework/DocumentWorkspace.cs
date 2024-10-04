@@ -8,12 +8,15 @@
     public abstract class DocumentWorkspace<TDocument> : Conductor<TDocument>.Collection.OneActive, IDocumentWorkspace
         where TDocument : class, INotifyPropertyChanged, IDeactivate, IHaveDisplayName
     {
-        private DocumentWorkspaceState _state/* = DocumentWorkspaceState.Master*/;
+        private DocumentWorkspaceState _state;
 
         protected DocumentWorkspace()
         {
             Items.CollectionChanged += delegate { NotifyOfPropertyChange(() => Status); };
+
+            // ReSharper disable VirtualMemberCallInConstructor
             DisplayName = IconName;
+            // ReSharper restore VirtualMemberCallInConstructor
         }
 
         protected override Task OnActivateAsync(CancellationToken cancellationToken)
@@ -60,13 +63,6 @@
             await EditAsync((TDocument)document);
         }
 
-        //public void Edit(TDocument child) {
-        //    Conductor.ActivateItemAsync(this);
-        //    State = DocumentWorkspaceState.Detail;
-        //    DisplayName = child.DisplayName;
-        //    ActivateItemAsync(child);
-        //}
-
         public async Task EditAsync(TDocument child)
         {
             await Conductor.ActivateItemAsync(this);
@@ -74,13 +70,6 @@
             DisplayName = child.DisplayName;
             await ActivateItemAsync(child);
         }
-
-        //public override void ActivateItem(TDocument item) {
-        //    item.Deactivated += OnItemOnDeactivated;
-        //    item.PropertyChanged += OnItemPropertyChanged;
-        //
-        //    base.ActivateItem(item);
-        //}
 
         public override async Task ActivateItemAsync(TDocument item,
             CancellationToken cancellationToken = new CancellationToken())
@@ -98,17 +87,6 @@
                 DisplayName = ((TDocument)sender).DisplayName;
             }
         }
-
-        //void OnItemOnDeactivated(object sender, DeactivationEventArgs e)
-        //{
-        //    var doc = (TDocument)sender;
-        //    if(e.WasClosed) {
-        //        DisplayName = IconName;
-        //        State = DocumentWorkspaceState.Master;
-        //        doc.Deactivated -= OnItemOnDeactivated;
-        //        doc.PropertyChanged -= OnItemPropertyChanged;
-        //    }
-        //}
 
         private async Task OnItemOnDeactivatedAsync(object sender, DeactivationEventArgs e)
         {

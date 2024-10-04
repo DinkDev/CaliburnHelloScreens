@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
-    using System.ComponentModel.Composition.Primitives;
     using System.Linq;
     using System.Windows;
     using Customers;
@@ -16,8 +14,6 @@
     public class ScreensBootstrapper : BootstrapperBase
     {
         CompositionContainer _container;
-        Window _mainWindow;
-        bool _actuallyClosing;
 
         public ScreensBootstrapper()
         {
@@ -28,12 +24,7 @@
         {
             _container = new CompositionContainer(
                 new AggregateCatalog(
-                    AssemblySource.Instance.Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()));
-            //CompositionHost.Initialize(
-            //new AggregateCatalog(
-            //    AssemblySource.Instance.Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()
-            //    )
-            //);
+                    AssemblySource.Instance.Select(x => new AssemblyCatalog(x))));
 
             var batch = new CompositionBatch();
 
@@ -50,12 +41,16 @@
         protected override object GetInstance(Type serviceType, string key)
         {
             var contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
-            var exports = _container.GetExportedValues<object>(contract);
+            var exports = _container
+                .GetExportedValues<object>(contract)
+                .ToArray();
 
             if (exports.Any())
+            {
                 return exports.First();
+            }
 
-            throw new Exception(string.Format("Could not locate any instances of contract {0}.", contract));
+            throw new Exception($"Could not locate any instances of contract {contract}.");
         }
 
         protected override IEnumerable<object> GetAllInstances(Type serviceType)
@@ -68,45 +63,10 @@
             _container.SatisfyImportsOnce(instance);
         }
 
-        //protected override void OnStartup(object sender, StartupEventArgs e)
-        //{
-        //    DisplayRootViewFor<IShell>();
-        //    mainWindow = Application.MainWindow;
-        //    mainWindow.Closing += MainWindowClosing;
-        //}
-
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             var task = DisplayRootViewForAsync<ShellViewModel>();
             task.WaitAndUnwrapException();
         }
-
-        //void MainWindowClosing(object sender, CancelEventArgs e)
-        //{
-        //    if (!_actuallyClosing)
-        //    {
-        //        e.Cancel = true;
-        //
-        //        Execute.OnUIThread(
-        //            () =>
-        //            {
-        //                var shell = IoC.Get<IShell>();
-        //
-        //                //shell.CanClose(
-        //                //    result => {
-        //                //        if (result) {
-        //                //            actuallyClosing = true;
-        //                //            mainWindow.Close();
-        //                //        }
-        //                //    });
-        //                var result = shell.CanCloseAsync().Result;
-        //                if (result)
-        //                {
-        //                    _actuallyClosing = true;
-        //                    //_mainWindow.Close();
-        //                }
-        //            });
-        //    }
-        //}
     }
 }

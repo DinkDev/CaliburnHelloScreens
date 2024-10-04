@@ -3,35 +3,30 @@
     using System;
     using System.ComponentModel.Composition;
     using Framework;
+    using JetBrains.Annotations;
     using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IWorkspace))]
     [Export(typeof(CustomersWorkspaceViewModel))]
     public class CustomersWorkspaceViewModel : DocumentWorkspace<CustomerViewModel>
     {
-        readonly Func<CustomerViewModel> createCustomerViewModel;
-        static int count = 1;
+        private readonly Func<CustomerViewModel> _customerViewModelFactory;
+        private static int _count = 1;
 
         [ImportingConstructor]
-        public CustomersWorkspaceViewModel(Func<CustomerViewModel> customerVMFactory)
+        public CustomersWorkspaceViewModel(Func<CustomerViewModel> customerVmFactory)
         {
-            createCustomerViewModel = customerVMFactory;
+            _customerViewModelFactory = customerVmFactory;
         }
+        public override string IconName => "Customers";
 
-        public override string IconName
-        {
-            get { return "Customers"; }
-        }
+        public override string Icon => "../Customers/Resources/Images/man1-48.png";
 
-        public override string Icon
-        {
-            get { return "../Customers/Resources/Images/man1-48.png"; }
-        }
-
+        [UsedImplicitly]
         public void New()
         {
-            var vm = createCustomerViewModel();
-            vm.DisplayName = "Customer " + count++;
+            var vm = _customerViewModelFactory();
+            vm.DisplayName = "Customer " + _count++;
             vm.IsDirty = true;
             var task = EditAsync(vm);
             task.WaitAndUnwrapException();

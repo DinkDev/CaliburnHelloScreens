@@ -9,23 +9,16 @@
     {
         public SettingsViewModel()
         {
+            // ReSharper disable VirtualMemberCallInConstructor
             DisplayName = IconName;
+            // ReSharper restore VirtualMemberCallInConstructor
         }
 
-        public string Icon
-        {
-            get { return "../Settings/Resources/Images/report48.png"; }
-        }
+        public string Icon => "../Settings/Resources/Images/report48.png";
 
-        public string IconName
-        {
-            get { return "Settings"; }
-        }
+        public string IconName => "Settings";
 
-        public string Status
-        {
-            get { return string.Empty; }
-        }
+        public string Status => string.Empty;
 
         public void Show()
         {

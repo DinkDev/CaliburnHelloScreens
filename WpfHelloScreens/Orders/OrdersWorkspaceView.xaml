@@ -2,8 +2,7 @@
     x:Class="Caliburn.Micro.HelloScreens.Orders.OrdersWorkspaceView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+    xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform">
     <Border
         BorderBrush="#FF051F42"
         BorderThickness="2"
@@ -57,11 +56,7 @@
                     Text="{Binding DisplayName,
                                    Mode=TwoWay}" />
             </Border>
-            <!--<mah:TransitioningContentControl
-                cal:View.Context="{Binding State,
-                                           Mode=TwoWay}"
-                cal:View.Model="{Binding}"
-                Style="{StaticResource specialTransition}" />-->
+
             <ContentControl
                 cal:View.Context="{Binding State,
                                            Mode=TwoWay}"

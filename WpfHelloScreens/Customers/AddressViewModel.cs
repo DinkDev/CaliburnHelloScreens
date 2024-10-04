@@ -1,8 +1,9 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Customers
 {
-    public class AddressViewModel : Screen
+    public sealed class AddressViewModel : Screen
     {
-        public AddressViewModel() {
+        public AddressViewModel()
+        {
             DisplayName = "Address";
         }
     }
