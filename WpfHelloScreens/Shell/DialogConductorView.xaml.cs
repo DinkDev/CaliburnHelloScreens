@@ -10,7 +10,7 @@
 
         public DialogConductorView() {
             InitializeComponent();
-            ActiveItem.ContentChanged += OnTransitionCompleted;
+            //ActiveItem.ContentChanged += OnTransitionCompleted;
             Loaded += OnLoad;
         }
 
@@ -18,17 +18,17 @@
             if(disabled) DisableBackground();
         }
 
-        void OnTransitionCompleted(object sender, EventArgs e) {
-            if(ActiveItem.Content == null)
-                EnableBackground();
-            else {
-                DisableBackground();
+        //void OnTransitionCompleted(object sender, EventArgs e) {
+        //    if(ActiveItem.Content == null)
+        //        EnableBackground();
+        //    else {
+        //        DisableBackground();
 
-                var control = ActiveItem.Content as Control;
-                if(control != null)
-                    control.Focus();
-            }
-        }
+        //        var control = ActiveItem.Content as Control;
+        //        if(control != null)
+        //            control.Focus();
+        //    }
+        //}
 
         public void EnableBackground() {
             disabled = false;

@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="431"
     d:DesignWidth="382"
@@ -62,11 +61,10 @@
                     Text="{Binding DisplayName,
                                    Mode=TwoWay}" />
             </Border>
-            <mah:TransitioningContentControl
+            <ContentControl
                 cal:View.Context="{Binding State,
                                            Mode=TwoWay}"
-                cal:View.Model="{Binding}"
-                Style="{StaticResource specialTransition}" />
+                cal:View.Model="{Binding}" />
         </DockPanel>
     </Border>
 </UserControl>

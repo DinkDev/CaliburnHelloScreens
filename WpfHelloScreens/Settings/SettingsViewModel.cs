@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-
-namespace Caliburn.Micro.HelloScreens.Settings
+﻿namespace Caliburn.Micro.HelloScreens.Settings
 {
     using System.ComponentModel.Composition;
     using Framework;
+    using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IWorkspace))]
     public class SettingsViewModel : Screen, IWorkspace
@@ -30,7 +29,8 @@ namespace Caliburn.Micro.HelloScreens.Settings
 
         public void Show()
         {
-            Task.WaitAll(((IConductor)Parent).ActivateItemAsync(this));
+            var task = ((IConductor)Parent).ActivateItemAsync(this);
+            task.WaitAndUnwrapException();
         }
     }
 }

@@ -1,11 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Caliburn.Micro.HelloScreens.Shell
+﻿namespace Caliburn.Micro.HelloScreens.Shell
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Framework;
 
     public class ApplicationCloseStrategy : ICloseStrategy<IWorkspace>

@@ -10,6 +10,7 @@
     using System.Windows;
     using Customers;
     using Framework;
+    using Nito.AsyncEx.Synchronous;
     using Orders;
 
     public class ScreensBootstrapper : BootstrapperBase
@@ -67,17 +68,17 @@
             _container.SatisfyImportsOnce(instance);
         }
 
+        //protected override void OnStartup(object sender, StartupEventArgs e)
+        //{
+        //    DisplayRootViewFor<IShell>();
+        //    mainWindow = Application.MainWindow;
+        //    mainWindow.Closing += MainWindowClosing;
+        //}
+
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            //DisplayRootViewFor<IShell>();
-            this.DisplayRootViewForAsync<ShellViewModel>();
-
-            //_mainWindow = Application.MainWindow;
-            //
-            //if (_mainWindow != null)
-            //{
-            //    _mainWindow.Closing += MainWindowClosing;
-            //}
+            var task = DisplayRootViewForAsync<ShellViewModel>();
+            task.WaitAndUnwrapException();
         }
 
         //void MainWindowClosing(object sender, CancelEventArgs e)

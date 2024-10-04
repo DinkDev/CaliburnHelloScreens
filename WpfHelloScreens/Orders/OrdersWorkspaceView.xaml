@@ -57,11 +57,15 @@
                     Text="{Binding DisplayName,
                                    Mode=TwoWay}" />
             </Border>
-            <mah:TransitioningContentControl
+            <!--<mah:TransitioningContentControl
                 cal:View.Context="{Binding State,
                                            Mode=TwoWay}"
                 cal:View.Model="{Binding}"
-                Style="{StaticResource specialTransition}" />
+                Style="{StaticResource specialTransition}" />-->
+            <ContentControl
+                cal:View.Context="{Binding State,
+                                           Mode=TwoWay}"
+                cal:View.Model="{Binding}" />
         </DockPanel>
     </Border>
 </UserControl>

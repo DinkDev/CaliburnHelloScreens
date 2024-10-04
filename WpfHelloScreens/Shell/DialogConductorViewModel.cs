@@ -1,12 +1,12 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Caliburn.Micro.HelloScreens.Shell
+﻿namespace Caliburn.Micro.HelloScreens.Shell
 {
     using System;
     using System.Collections;
     using System.ComponentModel.Composition;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Framework;
+    using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IDialogManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class DialogConductorViewModel : PropertyChangedBase, IDialogManager, IConductActiveItem
@@ -43,14 +43,17 @@ namespace Caliburn.Micro.HelloScreens.Shell
 
         public async Task ActivateItemAsync(object item, CancellationToken cancellationToken = new CancellationToken())
         {
-            ActiveItem = item as IScreen;
-
-            if (ActiveItem is IChild child)
+            if (item is IChild child)
             {
                 child.Parent = this;
             }
 
-            await ActiveItem?.ActivateAsync();
+            ActiveItem = item as IScreen;
+
+            if (ActiveItem != null)
+            {
+                await ActiveItem.ActivateAsync(cancellationToken).ConfigureAwait(false);
+            }
 
             NotifyOfPropertyChange(() => ActiveItem);
             ActivationProcessed(this, new ActivationProcessedEventArgs { Item = ActiveItem, Success = true });
@@ -67,7 +70,7 @@ namespace Caliburn.Micro.HelloScreens.Shell
         //        //        CloseActiveItemCore();
         //        //    }
         //        //});
-
+        //
         //        var result = guard.CanCloseAsync(CancellationToken.None).Result;
         //        if (result)
         //        {
@@ -87,26 +90,31 @@ namespace Caliburn.Micro.HelloScreens.Shell
                 var result = await guard.CanCloseAsync(CancellationToken.None);
                 if (result)
                 {
-                    CloseActiveItemCore();
+                    await CloseActiveItemCoreAsync();
                 }
             }
             else
             {
-                CloseActiveItemCore();
+                await CloseActiveItemCoreAsync();
             }
         }
 
         object IHaveActiveItem.ActiveItem
         {
             get => ActiveItem;
-            set => Task.WaitAll(ActivateItemAsync(value));
+            set
+            {
+                var task = ActivateItemAsync(value);
+                task.WaitAndUnwrapException();
+            }
         }
 
         public event EventHandler<ActivationProcessedEventArgs> ActivationProcessed = delegate { };
 
         public void ShowDialog(IScreen dialogModel)
         {
-            Task.WaitAll(ActivateItemAsync(dialogModel));
+            var task = ActivateItemAsync(dialogModel);
+            task.WaitAndUnwrapException();
         }
 
         public void ShowMessageBox(string message, string title = "Hello Screens",
@@ -120,18 +128,24 @@ namespace Caliburn.Micro.HelloScreens.Shell
 
             if (callback != null)
             {
-                box.Deactivated += async (sender, args) => { callback(box); };
+                box.Deactivated += async (sender, args) => { await Task.Run(() => callback(box)); };
             }
 
-            Task.WaitAll(ActivateItemAsync(box));
+            var task = ActivateItemAsync(box);
+            task.WaitAndUnwrapException();
         }
 
-        void CloseActiveItemCore()
+        //void CloseActiveItemCore() {
+        //    var oldItem = ActiveItem;
+        //    ActivateItem(null);
+        //    oldItem.Deactivate(true);
+        //}
+
+        private async Task CloseActiveItemCoreAsync()
         {
             var oldItem = ActiveItem;
-            Task.WaitAll(ActivateItemAsync(null));
-            //oldItem.Deactivate(true);
-            oldItem.DeactivateAsync(true, CancellationToken.None);
+            await ActivateItemAsync(null);
+            await oldItem.DeactivateAsync(true);
         }
     }
 }

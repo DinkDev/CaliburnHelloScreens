@@ -2,8 +2,8 @@
 {
     using System;
     using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
     using Framework;
+    using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IWorkspace))]
     public class OrdersWorkspaceViewModel : DocumentWorkspace<OrderViewModel>
@@ -28,7 +28,8 @@
             var vm = createOrderViewModel();
             vm.DisplayName = "Order " + count++;
             vm.IsDirty = true;
-            Task.WaitAll(EditAsync(vm));
+            var task = EditAsync(vm);
+            task.WaitAndUnwrapException();
         }
     }
 }

@@ -3,16 +3,23 @@
     using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
+    using Nito.AsyncEx.Synchronous;
 
     public abstract class DocumentWorkspace<TDocument> : Conductor<TDocument>.Collection.OneActive, IDocumentWorkspace
         where TDocument : class, INotifyPropertyChanged, IDeactivate, IHaveDisplayName
     {
-        private DocumentWorkspaceState _state = DocumentWorkspaceState.Master;
+        private DocumentWorkspaceState _state/* = DocumentWorkspaceState.Master*/;
 
         protected DocumentWorkspace()
         {
             Items.CollectionChanged += delegate { NotifyOfPropertyChange(() => Status); };
             DisplayName = IconName;
+        }
+
+        protected override Task OnActivateAsync(CancellationToken cancellationToken)
+        {
+            State = DocumentWorkspaceState.Master;
+            return base.OnActivateAsync(cancellationToken);
         }
 
         public DocumentWorkspaceState State
@@ -29,7 +36,6 @@
         }
 
         protected IConductor Conductor => (IConductor)Parent;
-
         public abstract string IconName { get; }
         public abstract string Icon { get; }
 
@@ -39,7 +45,8 @@
         {
             if (!(Parent is IHaveActiveItem haveActive) || haveActive.ActiveItem != this)
             {
-                Conductor.ActivateItemAsync(this);
+                var task = Conductor.ActivateItemAsync(this);
+                task.WaitAndUnwrapException();
             }
             else
             {
@@ -53,8 +60,7 @@
             await EditAsync((TDocument)document);
         }
 
-        //public void Edit(TDocument child)
-        //{
+        //public void Edit(TDocument child) {
         //    Conductor.ActivateItemAsync(this);
         //    State = DocumentWorkspaceState.Detail;
         //    DisplayName = child.DisplayName;
@@ -72,7 +78,7 @@
         //public override void ActivateItem(TDocument item) {
         //    item.Deactivated += OnItemOnDeactivated;
         //    item.PropertyChanged += OnItemPropertyChanged;
-
+        //
         //    base.ActivateItem(item);
         //}
 

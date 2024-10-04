@@ -1,7 +1,9 @@
 ﻿namespace Caliburn.Micro.HelloScreens.Shell
 {
     using System.ComponentModel.Composition;
+    using System.Threading.Tasks;
     using Framework;
+    using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IMessageBox)), PartCreationPolicy(CreationPolicy.NonShared)]
 
@@ -32,24 +34,24 @@
         public string Message { get; set; }
         public MessageBoxOptions Options { get; set; }
 
-        public void Ok()
+        public async Task Ok()
         {
-            Select(MessageBoxOptions.Ok);
+            await SelectAsync(MessageBoxOptions.Ok);
         }
 
-        public void Cancel()
+        public async Task Cancel()
         {
-            Select(MessageBoxOptions.Cancel);
+            await SelectAsync(MessageBoxOptions.Cancel);
         }
 
-        public void Yes()
+        public async Task Yes()
         {
-            Select(MessageBoxOptions.Yes);
+            await SelectAsync(MessageBoxOptions.Yes);
         }
 
-        public void No()
+        public async Task No()
         {
-            Select(MessageBoxOptions.No);
+            await SelectAsync(MessageBoxOptions.No);
         }
 
         public bool WasSelected(MessageBoxOptions option)
@@ -62,10 +64,10 @@
             return (Options & option) == option;
         }
 
-        void Select(MessageBoxOptions option)
+        private async Task SelectAsync(MessageBoxOptions option)
         {
             selection = option;
-            TryCloseAsync();
+            await TryCloseAsync();
         }
     }
 }

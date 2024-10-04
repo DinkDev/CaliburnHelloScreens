@@ -56,9 +56,10 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <mah:TransitioningContentControl x:Name="ActiveItem"
+            <!--<mah:TransitioningContentControl x:Name="ActiveItem"
                 Margin="20"
-                Style="{StaticResource specialTransition}" />
+                Style="{StaticResource specialTransition}" />-->
+            <ContentControl x:Name="ActiveItem" Margin="20" />
         </DockPanel>
 
         <ContentControl x:Name="Dialogs"

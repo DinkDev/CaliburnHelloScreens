@@ -33,8 +33,9 @@
                         FontWeight="Bold"
                         Foreground="White" />
                 </Border>
-                <Controls:CustomTransitionControl x:Name="ActiveItem"
-                    Margin="8" />
+                <!--<Controls:CustomTransitionControl x:Name="ActiveItem"
+                    Margin="8" />-->
+                <ContentControl x:Name="ActiveItem" Margin="8" />
             </StackPanel>
         </Border>
     </Grid>

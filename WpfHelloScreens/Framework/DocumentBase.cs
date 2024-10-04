@@ -2,8 +2,6 @@
 {
     using System;
     using System.ComponentModel.Composition;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     public class DocumentBase : Screen, IHaveShutdownTask {
         bool _isDirty;
@@ -41,7 +39,7 @@
 
         protected virtual void DoCloseCheck(IDialogManager dialogs, Action<bool> callback)
         {
-            dialogs.ShowMessageBox(
+            Dialogs.ShowMessageBox(
                 "You have unsaved data. Are you sure you want to close this document? All changes will be lost.",
                 "Unsaved Data",
                 MessageBoxOptions.YesNo,

@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-
-namespace Caliburn.Micro.HelloScreens.Customers
+﻿namespace Caliburn.Micro.HelloScreens.Customers
 {
     using System;
     using System.ComponentModel.Composition;
     using Framework;
+    using Nito.AsyncEx.Synchronous;
 
     [Export(typeof(IWorkspace))]
+    [Export(typeof(CustomersWorkspaceViewModel))]
     public class CustomersWorkspaceViewModel : DocumentWorkspace<CustomerViewModel>
     {
         readonly Func<CustomerViewModel> createCustomerViewModel;
@@ -33,7 +33,8 @@ namespace Caliburn.Micro.HelloScreens.Customers
             var vm = createCustomerViewModel();
             vm.DisplayName = "Customer " + count++;
             vm.IsDirty = true;
-            Task.WaitAll(EditAsync(vm));
+            var task = EditAsync(vm);
+            task.WaitAndUnwrapException();
         }
     }
 }
