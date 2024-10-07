@@ -7,12 +7,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Shell\test.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Shell\test.xaml">
+    <Page Update="Shell\BusyIndicatorView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

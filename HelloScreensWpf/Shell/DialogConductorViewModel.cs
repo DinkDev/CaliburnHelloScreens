@@ -12,11 +12,16 @@
     {
         private readonly IWindowManager _windowManager;
         private readonly Func<IMessageBox> _messageBoxFactory;
+        private readonly Func<IBusyIndicator> _busyIndicatorFactory;
 
-        public DialogConductorViewModel(IWindowManager windowManager, Func<IMessageBox> messageBoxFactory)
+        public DialogConductorViewModel(
+            IWindowManager windowManager,
+            Func<IMessageBox> messageBoxFactory,
+            Func<IBusyIndicator> busyIndicatorFactory)
         {
             _windowManager = windowManager;
             _messageBoxFactory = messageBoxFactory;
+            _busyIndicatorFactory = busyIndicatorFactory;
         }
 
         public IScreen ActiveItem { get; set; }
@@ -48,7 +53,7 @@
         {
             if (item is IGuardClose guard)
             {
-                var result = await guard.CanCloseAsync(CancellationToken.None);
+                var result = await guard.CanCloseAsync(cancellationToken);
                 if (result)
                 {
                     await CloseActiveItemCoreAsync();
@@ -92,6 +97,30 @@
             await _windowManager.ShowDialogAsync(box, settings:settings);
 
             return box.IsAccepted;
+        }
+
+        public static IBusyIndicator BusyIndicator { get; set; }
+
+        public async Task SetBusyAsync(string busyMessage)
+        {
+            BusyIndicator = _busyIndicatorFactory();
+
+            BusyIndicator.BusyMessage = busyMessage;
+
+            await ActivateItemAsync(BusyIndicator);
+        }
+
+        public async Task ClearBusyAsync()
+        {
+            try
+            {
+                await DeactivateItemAsync(BusyIndicator, true);
+            }
+            finally
+            {
+                BusyIndicator = null;
+            }
+
         }
 
         private async Task CloseActiveItemCoreAsync()

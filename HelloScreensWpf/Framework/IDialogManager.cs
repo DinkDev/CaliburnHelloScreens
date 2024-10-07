@@ -10,5 +10,9 @@
             string message,
             string title = null,
             MessageBoxOptions options = MessageBoxOptions.Ok);
+
+        Task SetBusyAsync(string busyMessage);
+
+        Task ClearBusyAsync();
     }
 }

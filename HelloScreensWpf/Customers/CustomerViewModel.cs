@@ -10,6 +10,19 @@
         {
         }
 
+        //[UsedImplicitly]
+        //public async Task SaveAsync()
+        //{
+        //    await Dialogs.SetBusyAsync("Saving...")
+        //        .ContinueWith(x => Task.Delay(5000))
+        //        .ContinueWith(x => Dialogs.ClearBusyAsync())
+        //        .ContinueWith(async x =>
+        //        {
+        //            IsDirty = false;
+        //            await Dialogs.ShowMessageBoxAsync("Your data has been successfully saved.", "Data Saved");
+        //        });
+        //}
+
         [UsedImplicitly]
         public async Task SaveAsync()
         {
