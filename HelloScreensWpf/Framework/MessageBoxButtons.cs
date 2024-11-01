@@ -3,7 +3,7 @@
     using System;
 
     [Flags]
-    public enum MessageBoxOptions
+    public enum MessageBoxButtons
     {
         Ok = 2,
         Cancel = 4,

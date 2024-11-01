@@ -53,7 +53,7 @@
             return await Dialogs.ShowMessageBoxAsync(
                 "You have unsaved data. Are you sure you want to close this document? All changes will be lost.",
                 "Unsaved Data",
-                MessageBoxOptions.YesNo);
+                MessageBoxButtons.YesNo);
         }
     }
 }

@@ -10,19 +10,19 @@
                     Margin="0 8 0 0">
             <Button x:Name="Ok"
                     Margin="2 0 0 0"
-                    Visibility="{Binding OkVisible, Converter={StaticResource booleanToVisibility}}"
+                    Visibility="{Binding OkVisible, Converter={StaticResource BooleanToVisibility}}"
                     Content="Ok"/>
             <Button x:Name="Yes"
                     Margin="2 0 0 0"
-                    Visibility="{Binding YesVisible, Converter={StaticResource booleanToVisibility}}"
+                    Visibility="{Binding YesVisible, Converter={StaticResource BooleanToVisibility}}"
                     Content="Yes" />
             <Button x:Name="No"
                     Margin="2 0 0 0"
-                    Visibility="{Binding NoVisible, Converter={StaticResource booleanToVisibility}}"
+                    Visibility="{Binding NoVisible, Converter={StaticResource BooleanToVisibility}}"
                     Content="No" />
             <Button x:Name="Cancel"
                     Margin="2 0 0 0"
-                    Visibility="{Binding CancelVisible, Converter={StaticResource booleanToVisibility}}"
+                    Visibility="{Binding CancelVisible, Converter={StaticResource BooleanToVisibility}}"
                     Content="Cancel" />
         </StackPanel>
     </StackPanel>

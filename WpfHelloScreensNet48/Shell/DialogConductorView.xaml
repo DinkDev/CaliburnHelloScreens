@@ -2,7 +2,7 @@
     x:Class="Caliburn.Micro.HelloScreens.Shell.DialogConductorView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Controls="clr-namespace:Caliburn.Micro.HelloScreens.Framework.Controls">
+    xmlns:controls="clr-namespace:Caliburn.Micro.HelloScreens.Framework.Controls">
     <Grid
         Background="Transparent"
         IsHitTestVisible="True"
@@ -33,9 +33,9 @@
                         FontWeight="Bold"
                         Foreground="White" />
                 </Border>
-                <!--<Controls:CustomTransitionControl x:Name="ActiveItem"
-                    Margin="8" />-->
-                <ContentControl x:Name="ActiveItem" Margin="8" />
+
+                <controls:CustomTransitionControl x:Name="ActiveItem" Margin="8" />
+
             </StackPanel>
         </Border>
     </Grid>

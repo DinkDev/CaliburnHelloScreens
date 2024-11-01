@@ -9,10 +9,6 @@
         Task<bool> ShowMessageBoxAsync(
             string message,
             string title = null,
-            MessageBoxOptions options = MessageBoxOptions.Ok);
-
-        Task SetBusyAsync(string busyMessage);
-
-        Task ClearBusyAsync();
+            MessageBoxButtonns options = MessageBoxButtons.Ok);
     }
 }

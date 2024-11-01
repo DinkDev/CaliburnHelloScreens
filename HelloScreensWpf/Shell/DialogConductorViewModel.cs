@@ -83,7 +83,7 @@
             task.WaitAndUnwrapException();
         }
 
-        public async Task<bool> ShowMessageBoxAsync(string message, string title = "", MessageBoxOptions options = MessageBoxOptions.Ok)
+        public async Task<bool> ShowMessageBoxAsync(string message, string title = "", MessageBoxButtons options = MessageBoxButtons.Ok)
         {
             var box = _messageBoxFactory();
 

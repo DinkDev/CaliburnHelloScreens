@@ -13,6 +13,7 @@
         public DialogConductorView()
         {
             InitializeComponent();
+            ActiveItem.ContentChanged += OnTransitionCompleted;
             Loaded += OnLoad;
         }
 
@@ -21,6 +22,23 @@
             if (_disabled)
             {
                 DisableBackground();
+            }
+        }
+
+        void OnTransitionCompleted(object sender, EventArgs e)
+        {
+            if (ActiveItem.Content == null)
+            {
+                EnableBackground();
+            }
+            else
+            {
+                DisableBackground();
+
+                if (ActiveItem.Content is Control control)
+                {
+                    control.Focus();
+                }
             }
         }
 

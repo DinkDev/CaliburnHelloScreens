@@ -3,7 +3,7 @@
     public interface IMessageBox : IScreen
     {
         string Message { get; set; }
-        MessageBoxOptions Options { get; set; }
+        MessageBoxButtons Options { get; set; }
         bool IsAccepted { get; }
     }
 }
