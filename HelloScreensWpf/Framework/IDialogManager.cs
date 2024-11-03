@@ -9,6 +9,6 @@
         Task<bool> ShowMessageBoxAsync(
             string message,
             string title = null,
-            MessageBoxButtonns options = MessageBoxButtons.Ok);
+            MessageBoxButtons options = MessageBoxButtons.Ok);
     }
 }
